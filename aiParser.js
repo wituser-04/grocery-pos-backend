@@ -1,10 +1,10 @@
 require('dotenv').config();
-const OpenAI = require('openai');
+const { Groq } = require("groq-sdk");
 const fs = require('fs');
 
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
 });
 
 const SYSTEM_PROMPT = `
@@ -27,8 +27,8 @@ If unclear, use reasonable defaults. Always respond with ONLY the JSON.
 
 async function parseVoiceInput(text) {
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+const completion = await groq.chat.completions.create({
+      model: 'llama-3.2-1b-preview',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: text }
@@ -47,9 +47,9 @@ async function parseVoiceInput(text) {
 
 async function transcribeAudio(filePath) {
   try {
-    const transcription = await openai.audio.transcriptions.create({
+const transcription = await groq.audio.transcriptions.create({
       file: fs.createReadStream(filePath),
-      model: "whisper-1",
+      model: "whisper-large-v3",
       language: "en"
     });
     return transcription.text;
