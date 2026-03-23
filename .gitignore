@@ -1,0 +1,5 @@
+.env
+node_modules/
+grocery.db
+dist/
+.expo/
