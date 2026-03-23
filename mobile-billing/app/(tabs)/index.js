@@ -85,6 +85,7 @@ export default function App() {
     } finally {
       setIsProcessing(false);
       setRecording(undefined);
+      
     }
   }
 

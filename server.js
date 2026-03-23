@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const { parseVoiceInput } = require('./aiParser');
+const { parseVoiceInput } = require('./aiParser'); // <-- Matching name
 const { getProductPrice } = require('./database');
 
 const app = express();
@@ -12,13 +12,11 @@ app.use(express.json());
 
 app.post('/process-audio', upload.single('audio'), async (req, res) => {
   try {
-    if (!req.file) throw new Error("No audio file received");
+    if (!req.file) throw new Error("No audio file!");
 
-    // Call the AI Parser
+    // WE ARE CALLING THE NEW NAME HERE
     const aiData = await parseVoiceInput(req.file.path);
-    console.log("AI Extracted:", aiData);
-
-    // Look up price in your SQLite database
+    
     const product = await getProductPrice(aiData.productName);
 
     if (product) {
@@ -34,10 +32,9 @@ app.post('/process-audio', upload.single('audio'), async (req, res) => {
       res.status(404).json({ success: false, error: `Product '${aiData.productName}' not found.` });
     }
   } catch (error) {
-    console.error("Server Error:", error.message);
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server live on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Cloud Server active on port ${PORT}`));
